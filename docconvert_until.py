@@ -11,7 +11,7 @@ Created on Mon Feb 26 16:00:44 2018
 # #docx --> xml
 # #doc --> txt
 # #
-# #
+# #http://blog.csdn.net/g0ose/article/details/64538787
 # #
 
 from docx import Document

@@ -8,6 +8,7 @@ Created on Tue Feb 27 09:57:29 2018
 
 import jieba
 import re
+import jieba.posseg as psg
 
 # #######################
 # #针对中文的分词处理
@@ -72,6 +73,22 @@ def text_2_word_search(txtcontent):
     
     return refc
 
+
+def fenci_textflag_2_word_cut(txtcontent):
+    # 使用用户字典
+    jieba.load_userdict('user_dict.txt')
+    
+    # 精确模式分词，并给出词性
+    seglist = psg.cut(txtcontent)
+    
+    refc = 'output'
+    for x in seglist:
+        #print(x.word,x.flag)
+        #print(x)
+        refc = refc + ',' + x.word +'/' +x.flag
+
+    return refc
+
 # #######################
 # #针对中文的搜索处理 关键词
 
@@ -113,6 +130,9 @@ def search_all_oflinetxt(keyword,linetxt):
 #retxt = fenci_text(u'阴阳师总是抽不到茨木童子好伤心')
 #print('....')
 #print(retxt)
+
+retxt = fenci_textflag_2_word_cut(u'阴阳师总是抽不到茨木童子好伤心')
+print(retxt)
 
 #num = search_first_oflinetxt(u'茨木童子',u'阴阳师茨木童子总是抽不到茨木童子好伤心')
 #print(num)

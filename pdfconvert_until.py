@@ -9,7 +9,7 @@ Created on Mon Feb 26 16:00:44 2018
 # #pdf --> txt
 # #pdf --> jpg
 # #
-# #
+# #http://blog.csdn.net/fighting_no1/article/details/51038942
 
 # #######################
 # #此处理 pdf --> txt
@@ -17,7 +17,7 @@ from io import open
 from io import StringIO
 #from cStringIO import StringIO
 
-from pdfminer.pdfparser import PDFParser, PDFDocument
+from pdfminer.pdfparser import PDFParser, PDFDocument, PDFNoOutlines
 #from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfdevice import PDFDevice
 
@@ -102,6 +102,46 @@ def parsePDF(pdfFile):
         
     return textlist
 
+
+# #取得pdf的目录
+# #返回的目录及对应的主题文本
+def getindex_of_PDF(pdfFile):
+    fp = open(pdfFile, 'rb')
+    #用文件对象来创建一个pdf文档分析器
+    praser = PDFParser(fp)
+    
+    # 创建一个PDF文档
+    document = PDFDocument()
+    # 连接分析器 与文档对象
+    praser.set_document(document)
+    document.set_parser(praser)
+    # 提供初始化密码
+    # 如果没有密码 就创建一个空的字符串
+    document.initialize()
+
+    lvllist = ''
+    titlelist = ''
+
+    if(document.catalog == None):
+        return lvllist,titlelist
+    
+    # .获得文档的目录（纲要）
+    try:
+        pdfoutlines = document.get_outlines()
+    except (PDFNoOutlines):
+        print('pdf no Outlines..')
+        return lvllist,titlelist
+    
+    for (level,title,dest,a,se) in pdfoutlines:
+        print(level, title)
+        lvllist.append(str(level))
+        titlelist.append(title)
+    
+    fp.close()
+    
+    return lvllist,titlelist
+
+
 # #返回的文本list 每个表示的是每页的文本
 def convert_pdf_2_textlist(pdfpath):
     textlist = parsePDF(pdfpath)
@@ -184,4 +224,9 @@ def convert_imageofpdf_2_jpg(pdfpath,jpgpath):
 
 #C_RESOURCE_FILE=r'G:/temp/tf/docconvert';
 #convert_imageofpdf_2_jpg(u'G:/temp/tf/docconvert/项目1.pdf',C_RESOURCE_FILE) #ng
+
+#indexl,indextitle = getindex_of_PDF('项目1.pdf')
+indexl,indextitle = getindex_of_PDF('工业大数据白皮书2017.pdf')
+print(indexl)
+print(indextitle)
 
